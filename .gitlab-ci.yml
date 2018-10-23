@@ -1,0 +1,11 @@
+stage:
+  - test
+
+test_job:
+  stage: test
+  script:
+    - ansible-lint *.yml
+
+  tags:
+    - ansible
+  
