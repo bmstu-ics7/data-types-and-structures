@@ -1,11 +1,25 @@
 stage:
-  - test
+  - lab_01
+  - lab_02
 
-test_job:
-  stage: test
+lab_01:
+  stage: lab_01
+
   script:
-    - ansible-lint *.yml
+    - apk add --no-cache gcc musl-dev
+    - cd lab_01
+    - g++ main.cpp
 
   tags:
-    - ansible
+    - compile
+
+lab_02:
+  stage: lab_02
+
+  script:
+    - apk add --no-cache gcc musl-dev
+    - cd lab_02
+    - g++ main.cpp
+
+  tags: compile
   
