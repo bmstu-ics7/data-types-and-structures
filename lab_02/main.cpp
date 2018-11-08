@@ -26,12 +26,12 @@ struct Car
     string country;
     int price;
     string color;
-    
+
     // 0 - new, 1 - old
     int mode;
 
-    union 
-    {        
+    union
+    {
         // Новый
         struct
         {
@@ -114,14 +114,14 @@ istream& operator >> (istream &input, struct Car &car)
         car.mode = -1;
         return input;
     }
-    
+
     car.mode = atoi(buf.c_str());
 
     if (car.mode == 1)
     {
         cout << "Year: ";
         input >> buf;
-             
+
         if (!is_int(buf))
         {
             cerr << "Incorrect input!" << endl;
@@ -131,9 +131,9 @@ istream& operator >> (istream &input, struct Car &car)
 
         car.cond.old_car.year = atoi(buf.c_str());
 
-        cout << "Mileage: ";         
+        cout << "Mileage: ";
         input >> buf;
-             
+
         if (!is_int(buf))
         {
             cerr << "incorrect input!" << endl;
@@ -145,19 +145,19 @@ istream& operator >> (istream &input, struct Car &car)
 
         cout << "Count fix: ";
         input >> buf;
-             
+
         if (!is_int(buf))
         {
             cerr << "incorrect input!" << endl;
             car.mode = -1;
             return input;
         }
-        
+
         car.cond.old_car.count_fix = atoi(buf.c_str());
 
         cout << "Count men: ";
         input >> buf;
-             
+
         if (!is_int(buf))
         {
             cerr << "incorrect input!" << endl;
@@ -172,7 +172,7 @@ istream& operator >> (istream &input, struct Car &car)
         cout << "Guarantee: ";
 
         input >> buf;
-             
+
         if (!is_int(buf))
         {
             cerr << "incorrect input!" << endl;
@@ -234,7 +234,7 @@ ifstream& operator >> (ifstream &input, struct Car &car)
         car.cond.old_car.count_fix = atoi(split[7].c_str());
         car.cond.old_car.count_men = atoi(split[8].c_str());
     }
-    else 
+    else
     {
         car.cond.new_car.guarantee = atoi(split[5].c_str());
     }
@@ -272,21 +272,21 @@ ostream& operator << (ostream &output, struct Car car)
     if (car.mode)
     {
         output << setw(6) << left << "Old "
-               << setw(6) << left << "Year: " 
+               << setw(6) << left << "Year: "
                << setw(7) << left << car.cond.old_car.year
-               << setw(9) << left << "Mileage: " 
+               << setw(9) << left << "Mileage: "
                << setw(9) << left << car.cond.old_car.mileage
-               << setw(11) << left << "Count fix: " 
+               << setw(11) << left << "Count fix: "
                << setw(4) << left << car.cond.old_car.count_fix
-               << setw(11) << left << "Count men: " 
-               << setw(4) << left << car.cond.old_car.count_men 
+               << setw(11) << left << "Count men: "
+               << setw(4) << left << car.cond.old_car.count_men
                << endl;
     }
     else
     {
         output << setw(6) << left << "New"
-               << setw(11) << left << "Guarantee: " 
-               << setw(4) << left << car.cond.new_car.guarantee 
+               << setw(11) << left << "Guarantee: "
+               << setw(4) << left << car.cond.new_car.guarantee
                << endl;
     }
 
@@ -374,7 +374,7 @@ vector<struct Car> data_file(vector<struct Key> &keys)
 
         struct Car car;
         file >> car;
-        
+
         if (car.mode != -1)
             data += car;
     }
@@ -514,7 +514,7 @@ void sorting_keys(vector<struct Key> &keys)
 
 
 /*
- * Вывод таблицы с ключами 
+ * Вывод таблицы с ключами
  */
 
 void print_with_keys(vector<struct Car> data, vector<struct Key> keys)
@@ -537,7 +537,7 @@ void print_with_keys(vector<struct Car> data, vector<struct Key> keys)
     {
         cout << setw(5) << left << keys[i].id << data[keys[i].id - 1];
     }
-}  
+}
 
 int remove_car(vector<struct Car> &data, vector<struct Key> &keys)
 {
@@ -562,7 +562,7 @@ int remove_car(vector<struct Car> &data, vector<struct Key> &keys)
     }
 
     data.erase(data.begin() + id - 1);
-    
+ 
     keys.clear();
 
     for (int i = 0; i < data.size(); i++)
@@ -572,7 +572,6 @@ int remove_car(vector<struct Car> &data, vector<struct Key> &keys)
         key.price = data[i].price;
         keys.push_back(key);
     }
-
 
     return SUCCESS;
 }
@@ -676,7 +675,7 @@ void menu(vector<struct Car> &data, vector<struct Key> &keys)
 {
     while (true)
     {
-        print_menu(); 
+        print_menu();
 
         int choise;
         cin >> choise;
