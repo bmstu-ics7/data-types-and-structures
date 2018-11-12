@@ -1,3 +1,5 @@
+image: alpine:3.7
+
 stages:
   - lab_01
   - lab_02
@@ -9,6 +11,7 @@ lab_01:
   - apk add --no-cache gcc musl-dev
   - cd lab_01
   - g++ main.cpp
+  - cd
 
   only:
   - master
@@ -20,6 +23,7 @@ lab_02:
   - apk add --no-cache gcc musl-dev
   - cd lab_02
   - g++ main.cpp
+  - cd
 
   only:
   - master
