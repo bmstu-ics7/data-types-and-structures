@@ -1,4 +1,4 @@
-stage:
+stages:
   - lab_01
   - lab_02
 
