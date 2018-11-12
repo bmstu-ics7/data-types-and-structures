@@ -3,6 +3,7 @@ image: alpine:3.7
 stages:
   - lab_01
   - lab_02
+  - cloc
 
 lab_01:
   stage: lab_01
@@ -24,6 +25,16 @@ lab_02:
   - cd lab_02
   - g++ main.cpp
   - cd
+
+  only:
+  - master
+
+cloc:
+  stage: cloc
+
+  script:
+  - apk add --no-cache cloc
+  - cloc .
 
   only:
   - master
