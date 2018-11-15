@@ -373,6 +373,8 @@ vector<struct Car> data_file(vector<struct Key> &keys)
             break;
 
         struct Car car;
+        car.mode = 0;
+
         file >> car;
 
         if (car.mode != -1)
@@ -579,6 +581,9 @@ int remove_car(vector<struct Car> &data, vector<struct Key> &keys)
 int add_car(vector<struct Car> &data, vector<struct Key> &keys)
 {
     struct Car car;
+    car.mode = 0;
+    car.price = 0;
+
     cin >> car;
 
     if (car.mode == -1)
