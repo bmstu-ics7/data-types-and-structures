@@ -1,9 +1,17 @@
 image: alpine:3.7
 
 stages:
+  - cppcheck
   - lab_01
   - lab_02
   - cloc
+
+cppcheck:
+  stage: cppcheck
+
+  script:
+  - apk add --no-cache cppcheck
+  - cppcheck --enable=all --inconclusive --error-exitcode=1 .
 
 lab_01:
   stage: lab_01
@@ -38,3 +46,4 @@ cloc:
 
   only:
   - master
+
