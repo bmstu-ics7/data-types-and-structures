@@ -484,7 +484,34 @@ ostream& operator << (ostream &output, const Vector vector)
     return output;
 }
 
-Vector operator * (Vector vector, Matrix matrix)
+ostream& operator << (ostream &output, const vector< vector<int> > matrix)
+{
+    output << "Матрица: " << endl;
+
+    for (int i = 0; i < matrix.size(); i++)
+    {
+        for (int j = 0; j < matrix[i].size(); j++)
+            output << matrix[i][j] << ' ';
+
+        output << endl;
+    }
+
+    return output;
+}
+
+ostream& operator << (ostream &output, const vector<int> vec)
+{
+    output << "Вектор: ";
+
+    for (int i = 0; i < vec.size(); i++)
+        output << vec[i] << ' ';
+
+    output << endl;
+
+    return output;
+}
+
+Vector operator * (const Vector vector, const Matrix matrix)
 {
     Vector result;
 
@@ -529,22 +556,93 @@ Vector operator * (Vector vector, Matrix matrix)
     return result;
 }
 
+vector<int> operator * (const vector<int> vec, const vector< vector<int> > matrix)
+{
+    vector<int> result(0);
+
+    for (int i = 0; i < matrix[0].size(); i++)
+    {
+        int sum = 0;
+
+        for (int j = 0; j < vec.size(); j++)
+            sum += vec[j] * matrix[j][i];
+
+        result.push_back(sum);
+    }
+
+    return result;
+}
+
+vector< vector<int> > convert_to_default(const Matrix matrix)
+{
+    vector< vector<int> > result;
+
+    for (int i = 0; i < matrix.n; i++)
+    {
+        vector<int> line;
+        for (int j = 0; j < matrix.m; j++)
+            line.push_back(0);
+
+        result.push_back(line);
+    }
+
+    my_list *temp = matrix.first_elements;
+    for (int i = 0; i < matrix.n; i++)
+    {
+        int from = temp->data;
+        int to = temp->next == NULL ? matrix.values.size() : temp->next->data;
+
+        for (int j = from; j < to; j++)
+        {
+            result[i][matrix.number_of_columns[j]] = matrix.values[j];
+        }
+
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+vector<int> convert_to_default(const Vector vec)
+{
+    vector<int> result(0);
+
+    for (int i = 0; i < vec.n; i++)
+        result.push_back(0);
+
+    for (int i = 0; i < vec.values.size(); i++)
+        result[vec.columns[i]] = vec.values[i];
+
+    return result;
+}
+
 int hand_made()
 {
     Matrix matrix;
-    Vector vector;
+    Vector vec;
+
+    vector< vector<int> > default_matrix;
+    vector<int> default_vector;
 
     if (input_matrix(matrix) != SUCCESS)
         return INCORRECT_INPUT;
 
     cout << matrix << endl;
 
-    if (input_vector(vector) != SUCCESS)
+    if (input_vector(vec) != SUCCESS)
         return INCORRECT_INPUT;
 
-    cout << vector << endl;
+    cout << vec << endl;
 
-    cout << vector * matrix;
+    default_matrix = convert_to_default(matrix);
+    default_vector = convert_to_default(vec);
+
+    cout << default_matrix << endl;
+    cout << default_vector << endl;
+
+    cout << vec * matrix << endl;
+
+    cout << default_vector * default_matrix << endl;
 
     return SUCCESS;
 }
@@ -614,10 +712,16 @@ int use_files()
     file.close();
 
     cout << matrix << endl;
-
     cout << vec << endl;
 
+    default_matrix = convert_to_default(matrix);
+    default_vector = convert_to_default(vec);
+
+    cout << default_matrix << endl;
+    cout << default_vector << endl;
+
     cout << vec * matrix << endl;
+    cout << default_vector * default_matrix << endl;
 
     return SUCCESS;
 }
