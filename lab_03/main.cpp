@@ -43,6 +43,16 @@ struct Matrix
     vector<int> values;             // значения ненулевых элементов
     vector<int> number_of_columns;  // номера столбцов
     my_list *first_elements;        // номера первых элементов строк
+
+    /*~Matrix()
+    {
+        my_list *temp = first_elements;
+
+        for (; temp != NULL; temp = temp->next)
+            free(temp->prev);
+
+        free(temp);
+    }*/
 };
 
 struct Vector
@@ -74,16 +84,6 @@ void list_append(my_list **head, int data)
     new_element->next = NULL;
     new_element->prev = temp;
     temp->next = new_element;
-}
-
-void list_free(my_list *head)
-{
-    my_list *temp = head;
-
-    for (; temp != NULL; temp = temp->next)
-        free(temp->prev);
-
-    free(temp);
 }
 
 bool is_int(string str)
@@ -194,7 +194,7 @@ void insert_matrix_elements(Matrix &matrix, vector<int> lines)
             for (; temp->next != NULL; temp = temp->next);
             list_append(&(matrix.first_elements), -1);
         }
-    }
+     }
 
     for (my_list *temp = matrix.first_elements; temp != NULL; temp = temp->next)
     {
@@ -203,7 +203,7 @@ void insert_matrix_elements(Matrix &matrix, vector<int> lines)
             if (temp->next != NULL)
                 temp->data = temp->next->data;
             else
-                temp->data = matrix.values.size() - 1;
+                temp->data = matrix.values.size();
         }
     }
 }
@@ -269,6 +269,93 @@ int cin_matrix(Matrix &matrix, const int count)
 
 int generate_matrix(Matrix &matrix, const int count)
 {
+    vector<int> val(0);
+
+    for (int i = 0; i < count; i++)
+    {
+        bool was = true;
+        int num;
+
+        while (was)
+        {
+            num = rand() % count;
+
+            was = false;
+            for (int j = 0; j < val.size(); j++)
+                if (num == val[j])
+                {
+                    was = true;
+                    break;
+                }
+        }
+
+        val.push_back(num);
+    }
+
+    int count_in_line = count / matrix.n;
+    int count_with_plus = 0;
+
+    if (count > matrix.n)
+            count_with_plus = count % matrix.n;
+
+    matrix.first_elements = NULL;
+
+    int number = 0;
+
+    if (count < matrix.n)
+    {
+        count_in_line = 1;
+        number = count;
+    }
+    else
+        number = matrix.n;
+
+    for (int i = 0; i < number; i++)
+    {
+        int n = count_in_line;
+        if (i < count_with_plus)
+            n += 1;
+
+        vector<int> col_in_line(0);
+        for (int j = 0; j < n; j++)
+        {
+            int num;
+            bool was = true;
+
+            while (was)
+            {
+                was = false;
+                num = rand() % matrix.m;
+
+                for (int k = 0; j < col_in_line.size(); j++)
+                    if (num == col_in_line[k])
+                    {
+                        was = true;
+                        break;
+                    }
+            }
+
+            for (int i = 0; i < col_in_line.size(); i++)
+                for (int j = 0; j < col_in_line.size() - i - 1; j++)
+                        if (col_in_line[j] > col_in_line[j + 1])
+                            swap(col_in_line[j], col_in_line[j + 1]);
+
+            col_in_line.push_back(num);
+            cout << "deb " << num << endl;
+        }
+
+        list_append(&(matrix.first_elements), matrix.number_of_columns.size());
+        for (int j = 0; j < col_in_line.size(); j++)
+            matrix.number_of_columns.push_back(col_in_line[j]);
+    }
+
+    for (int i = count; i < matrix.n; i++)
+    {
+        list_append(&(matrix.first_elements), count);
+    }
+
+    matrix.values = val;
+
     return SUCCESS;
 }
 
@@ -640,9 +727,16 @@ int hand_made()
     cout << default_matrix << endl;
     cout << default_vector << endl;
 
-    cout << vec * matrix << endl;
+    clock_t start = clock();
+    Vector aswr = vec * matrix;
+    clock_t end = clock();
 
+    clock_t default_start = clock();
     cout << default_vector * default_matrix << endl;
+    clock_t default_end = clock();
+
+    cout << "Хранение разряженной: " << end - start << " тиков" << endl;
+    cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
 
     return SUCCESS;
 }
@@ -720,8 +814,17 @@ int use_files()
     cout << default_matrix << endl;
     cout << default_vector << endl;
 
-    cout << vec * matrix << endl;
+    clock_t start = clock();
+    Vector answ = vec * matrix;
+    clock_t end = clock();
+
+    clock_t default_start = clock();
     cout << default_vector * default_matrix << endl;
+    clock_t default_end = clock();
+
+    cout << "Хранение разряженной: " << end - start << " тиков" << endl;
+    cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
+
 
     return SUCCESS;
 }
