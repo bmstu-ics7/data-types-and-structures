@@ -44,15 +44,28 @@ struct Matrix
     vector<int> number_of_columns;  // номера столбцов
     my_list *first_elements;        // номера первых элементов строк
 
-    /*~Matrix()
+    Matrix()
     {
-        my_list *temp = first_elements;
+        n = 0;
+        m = 0;
+        first_elements = NULL;
+    }
+
+    ~Matrix()
+    {
+        if (first_elements == NULL)
+            return;
+
+        my_list *temp = first_elements->next;
+
+        if (temp == NULL)
+            return;
 
         for (; temp != NULL; temp = temp->next)
-            free(temp->prev);
+            delete temp->prev;
 
-        free(temp);
-    }*/
+        delete temp;
+    }
 };
 
 struct Vector
@@ -69,7 +82,7 @@ void list_append(my_list **head, int data)
 
     if (*head == NULL)
     {
-        *head = (my_list*)malloc(sizeof(my_list));
+        *head = new my_list;
         (*head)->data = data;
         (*head)->next = NULL;
         return;
@@ -78,7 +91,7 @@ void list_append(my_list **head, int data)
     my_list *temp = *head;
     for (; temp->next != NULL; temp = temp->next);
 
-    my_list *new_element = (my_list*)malloc(sizeof(my_list));
+    my_list *new_element = new my_list;
 
     new_element->data = data;
     new_element->next = NULL;
@@ -89,7 +102,7 @@ void list_append(my_list **head, int data)
 bool is_int(string str)
 {
     for (int i = 0; i < str.size(); i++)
-        if (!isdigit(str[i]))
+        if (!isdigit(str[i]) && str[i] != '-')
             return false;
 
     return true;
@@ -170,33 +183,40 @@ int input_matrix(Matrix &matrix)
     }
 }
 
-void insert_matrix_elements(Matrix &matrix, vector<int> lines)
+void insert_matrix_elements(Matrix &matrix, const vector<int> lines)
 {
     matrix.first_elements = NULL;
 
+    cout << "kek" << endl;
+
     for (int i = 0; i < matrix.n; i++)
     {
-        bool check = false;
+        bool have_line = false;
 
         for (int j = 0; j < lines.size(); j++)
         {
-            if (lines[j] == i)
+            if (lines[j] == i) 
             {
                 list_append(&(matrix.first_elements), j);
-                check = true;
+                have_line = true;
                 break;
             }
         }
 
-        if (!check)
+        if (!have_line)
         {
-            my_list *temp = matrix.first_elements;
-            for (; temp->next != NULL; temp = temp->next);
             list_append(&(matrix.first_elements), -1);
         }
-     }
+    }
 
-    for (my_list *temp = matrix.first_elements; temp != NULL; temp = temp->next)
+    cout << "kek" << endl;
+
+    for (my_list *temp = matrix.first_elements; temp != NULL; cout << "kek\n", temp = temp->next);
+
+    my_list *temp = matrix.first_elements;
+    for (int i = 0; temp != NULL && temp->next != NULL; temp = temp->next, cout << i++);
+
+    for (; temp != NULL; temp = temp->prev)
     {
         if (temp->data == -1)
         {
@@ -214,6 +234,8 @@ int cin_matrix(Matrix &matrix, const int count)
 
     for (int i = 0; i < count; i++)
     {
+        cout << "Через пробел номер столбца, строки и значение: ";
+
         getline(cin, buf);
 
         vector<string> split(0);
@@ -278,7 +300,7 @@ int generate_matrix(Matrix &matrix, const int count)
 
         while (was)
         {
-            num = rand() % count;
+            num = rand() % count + 1;
 
             was = false;
             for (int j = 0; j < val.size(); j++)
@@ -317,7 +339,7 @@ int generate_matrix(Matrix &matrix, const int count)
             n += 1;
 
         vector<int> col_in_line(0);
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < matrix.m; j++)
         {
             int num;
             bool was = true;
@@ -327,7 +349,7 @@ int generate_matrix(Matrix &matrix, const int count)
                 was = false;
                 num = rand() % matrix.m;
 
-                for (int k = 0; j < col_in_line.size(); j++)
+                for (int k = 0; k < col_in_line.size(); k++)
                     if (num == col_in_line[k])
                     {
                         was = true;
@@ -335,14 +357,13 @@ int generate_matrix(Matrix &matrix, const int count)
                     }
             }
 
-            for (int i = 0; i < col_in_line.size(); i++)
-                for (int j = 0; j < col_in_line.size() - i - 1; j++)
-                        if (col_in_line[j] > col_in_line[j + 1])
-                            swap(col_in_line[j], col_in_line[j + 1]);
-
             col_in_line.push_back(num);
-            cout << "deb " << num << endl;
         }
+
+        for (int i = 0; i < col_in_line.size(); i++)
+            for (int j = 0; j < col_in_line.size() - i - 1; j++)
+                    if (col_in_line[j] > col_in_line[j + 1])
+                        swap(col_in_line[j], col_in_line[j + 1]);
 
         list_append(&(matrix.first_elements), matrix.number_of_columns.size());
         for (int j = 0; j < col_in_line.size(); j++)
@@ -410,7 +431,6 @@ int input_vector(Vector &matrix)
             return INCORRECT_INPUT;
     }
 
-
     return SUCCESS;
 }
 
@@ -418,6 +438,8 @@ int cin_vector(Vector &matrix, int count)
 {
     for (int i = 0; i < count; i++)
     {
+        cout << "Через пробел номер столбца и значение: ";
+
         getline(cin, buf);
 
         while (buf[0] == ' ')
@@ -479,7 +501,7 @@ int generate_vector(Vector &matrix, int count)
 
         while (was)
         {
-            num = rand() % count;
+            num = rand() % count + 1;
 
             was = false;
             for (int j = 0; j < val.size(); j++)
@@ -690,6 +712,22 @@ vector< vector<int> > convert_to_default(const Matrix matrix)
     return result;
 }
 
+Vector convert_to_vector(vector<int> vec)
+{
+    Vector result;
+
+    result.n = vec.size();
+
+    for (int i = 0; i < vec.size(); i++)
+        if (vec[i] != 0)
+        {
+            result.values.push_back(vec[i]);
+            result.columns.push_back(i);
+        }
+
+    return result;
+}
+
 vector<int> convert_to_default(const Vector vec)
 {
     vector<int> result(0);
@@ -721,6 +759,12 @@ int hand_made()
 
     cout << vec << endl;
 
+    if (vec.n != matrix.n)
+    {
+        cerr << "Некорректные данные!" << endl;
+        return INCORRECT_INPUT;
+    }
+
     default_matrix = convert_to_default(matrix);
     default_vector = convert_to_default(vec);
 
@@ -732,8 +776,14 @@ int hand_made()
     clock_t end = clock();
 
     clock_t default_start = clock();
-    cout << default_vector * default_matrix << endl;
+    vector<int> default_answ = default_vector * default_matrix;
     clock_t default_end = clock();
+
+    cout << "Ответ: " << endl;
+    cout << convert_to_vector(default_vector) << endl;
+
+    cout << "Ответ:" << endl;
+    cout << default_answ << endl;
 
     cout << "Хранение разряженной: " << end - start << " тиков" << endl;
     cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
@@ -815,16 +865,20 @@ int use_files()
     cout << default_vector << endl;
 
     clock_t start = clock();
-    Vector answ = vec * matrix;
+    Vector aswr = vec * matrix;
     clock_t end = clock();
 
     clock_t default_start = clock();
-    cout << default_vector * default_matrix << endl;
+    vector<int> default_answ = default_vector * default_matrix;
     clock_t default_end = clock();
 
+    cout << "Ответ: " << endl;
+    cout << convert_to_vector(default_vector) << endl;
+
+    cout << "Ответ:" << endl;
+    cout << default_answ << endl;
     cout << "Хранение разряженной: " << end - start << " тиков" << endl;
     cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
-
 
     return SUCCESS;
 }
