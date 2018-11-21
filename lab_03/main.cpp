@@ -43,29 +43,6 @@ struct Matrix
     vector<int> values;             // значения ненулевых элементов
     vector<int> number_of_columns;  // номера столбцов
     my_list *first_elements;        // номера первых элементов строк
-
-    Matrix()
-    {
-        n = 0;
-        m = 0;
-        first_elements = NULL;
-    }
-
-    ~Matrix()
-    {
-        if (first_elements == NULL)
-            return;
-
-        my_list *temp = first_elements->next;
-
-        if (temp == NULL)
-            return;
-
-        for (; temp != NULL; temp = temp->next)
-            delete temp->prev;
-
-        delete temp;
-    }
 };
 
 struct Vector
@@ -85,6 +62,7 @@ void list_append(my_list **head, int data)
         *head = new my_list;
         (*head)->data = data;
         (*head)->next = NULL;
+        (*head)->prev = NULL;
         return;
     }
 
@@ -97,6 +75,22 @@ void list_append(my_list **head, int data)
     new_element->next = NULL;
     new_element->prev = temp;
     temp->next = new_element;
+}
+
+void list_free(my_list *head)
+{
+    if (head == NULL)
+        return;
+
+    my_list *temp = head->next;
+
+    if (temp == NULL)
+        return;
+
+    for (; temp != NULL; temp = temp->next)
+        delete temp->prev;
+
+    delete temp;
 }
 
 bool is_int(string str)
@@ -187,15 +181,13 @@ void insert_matrix_elements(Matrix &matrix, const vector<int> lines)
 {
     matrix.first_elements = NULL;
 
-    cout << "kek" << endl;
-
     for (int i = 0; i < matrix.n; i++)
     {
         bool have_line = false;
 
         for (int j = 0; j < lines.size(); j++)
         {
-            if (lines[j] == i) 
+            if (lines[j] == i)
             {
                 list_append(&(matrix.first_elements), j);
                 have_line = true;
@@ -209,12 +201,8 @@ void insert_matrix_elements(Matrix &matrix, const vector<int> lines)
         }
     }
 
-    cout << "kek" << endl;
-
-    for (my_list *temp = matrix.first_elements; temp != NULL; cout << "kek\n", temp = temp->next);
-
     my_list *temp = matrix.first_elements;
-    for (int i = 0; temp != NULL && temp->next != NULL; temp = temp->next, cout << i++);
+    for (; temp != NULL && temp->next != NULL; temp = temp->next);
 
     for (; temp != NULL; temp = temp->prev)
     {
@@ -568,7 +556,7 @@ ostream& operator << (ostream &output, const Matrix matrix)
 
     output << "Номера первых элементов: ";
     for (my_list *temp = matrix.first_elements; temp != NULL; temp = temp->next)
-        output << temp->data << " ";
+        output << temp->data << ' ';
     output << endl;
 
     return output;
@@ -696,6 +684,7 @@ vector< vector<int> > convert_to_default(const Matrix matrix)
     }
 
     my_list *temp = matrix.first_elements;
+
     for (int i = 0; i < matrix.n; i++)
     {
         int from = temp->data;
@@ -780,13 +769,15 @@ int hand_made()
     clock_t default_end = clock();
 
     cout << "Ответ: " << endl;
-    cout << convert_to_vector(default_vector) << endl;
+    cout << convert_to_vector(default_answ) << endl;
 
     cout << "Ответ:" << endl;
     cout << default_answ << endl;
 
     cout << "Хранение разряженной: " << end - start << " тиков" << endl;
     cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
+
+    list_free(matrix.first_elements);
 
     return SUCCESS;
 }
@@ -873,12 +864,14 @@ int use_files()
     clock_t default_end = clock();
 
     cout << "Ответ: " << endl;
-    cout << convert_to_vector(default_vector) << endl;
+    cout << convert_to_vector(default_answ) << endl;
 
     cout << "Ответ:" << endl;
     cout << default_answ << endl;
     cout << "Хранение разряженной: " << end - start << " тиков" << endl;
     cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
+
+    list_free(matrix.first_elements);
 
     return SUCCESS;
 }
