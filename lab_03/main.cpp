@@ -761,11 +761,15 @@ int hand_made()
     cout << default_vector << endl;
 
     clock_t start = clock();
-    Vector aswr = vec * matrix;
+    Vector answ;
+    for (int i = 0; i < 500; i++)
+        answ = vec * matrix;
     clock_t end = clock();
 
+    vector<int> default_answ;
     clock_t default_start = clock();
-    vector<int> default_answ = default_vector * default_matrix;
+    for (int i = 0; i < 100; i++)
+        default_answ = default_vector * default_matrix;
     clock_t default_end = clock();
 
     cout << "Ответ: " << endl;
@@ -774,8 +778,8 @@ int hand_made()
     cout << "Ответ:" << endl;
     cout << default_answ << endl;
 
-    cout << "Хранение разряженной: " << end - start << " тиков" << endl;
-    cout << "Обычная матрица: " << default_end - default_start << " тиков" << endl;
+    cout << "Хранение разряженной: " << (end - start) / 500 << " тиков" << endl;
+    cout << "Обычная матрица: " << (default_end - default_start) / 100 << " тиков" << endl;
 
     list_free(matrix.first_elements);
 
