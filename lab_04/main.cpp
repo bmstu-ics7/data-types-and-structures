@@ -259,10 +259,10 @@ vector<coord> take_neighbor(vector< vector<int> > lab, coord cell)
     if (cell.y == 0)
         up = false;
 
-    if (cell.x == lab[0].size() - 1)
+    if (cell.x == lab.size() - 1)
         right = false;
 
-    if (cell.y == lab.size() - 1)
+    if (cell.y == lab[0].size() - 1)
         down = false;
 
     if (up && lab[cell.x][cell.y - 1] == 0)
@@ -424,7 +424,7 @@ int main(void)
     draw_way< stack_vector<coord> >(lab_vector, way_vector);
     clock_t finish_vector = clock();
 
-    cout << way_vector;
+    //cout << way_vector;
     cout << lab_vector << endl;
 
     cout << "Реализация списком: " << endl;
@@ -434,7 +434,7 @@ int main(void)
     draw_way< stack_list<coord> >(lab_list, way_list);
     clock_t finish_list = clock();
 
-    cout << way_list;
+    //cout << way_list;
     cout << lab_list << endl;
 
     cout << "Время реализации массивом: " << finish_vector - start_vector << " тиков" << endl;
