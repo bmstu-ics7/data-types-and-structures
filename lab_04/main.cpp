@@ -403,11 +403,43 @@ int input_all(vector< vector<int> > &lab, coord &start, coord &finish)
     return SUCCESS;
 }
 
+void benchmark(vector< vector<int> > bench, coord start, coord finish, int count)
+{
+    long long int result_vector = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        vector< vector<int> > copy = bench;
+
+        clock_t start_time = clock();
+        stack_vector<coord> way = find_with_stack< stack_vector<coord> >(copy, start, finish);
+        clock_t finish_time = clock();
+
+        result_vector += finish_time - start_time;
+    }
+    result_vector /= 10;
+
+    long long int result_list = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        vector< vector<int> > copy = bench;
+
+        clock_t start_time = clock();
+        stack_vector<coord> way = find_with_stack< stack_vector<coord> >(copy, start, finish);
+        clock_t finish_time = clock();
+
+        result_list += finish_time - start_time;
+    }
+    result_list /= 10;
+
+    cout << "Среднее время реализации массивом: " << result_vector << " тиков" << endl;
+    cout << "Среднее время реализации списком: " << result_list << " тиков" << endl;
+}
+
 int main(void)
 {
     srand(time(NULL));
 
-    vector< vector<int> > lab_vector, lab_list;
+    vector< vector<int> > lab_vector, lab_list, bench;
     coord start, finish;
 
     if (input_all(lab_vector, start, finish) != SUCCESS)
@@ -416,6 +448,7 @@ int main(void)
     cout << endl;
 
     lab_list = lab_vector;
+    bench = lab_vector;
 
     cout << "Реализация массивом: " << endl;
 
@@ -438,7 +471,9 @@ int main(void)
     cout << lab_list << endl;
 
     cout << "Время реализации массивом: " << finish_vector - start_vector << " тиков" << endl;
-    cout << "Время реализации списком: " << finish_list - start_list << " тиков" << endl;
+    cout << "Время реализации списком: " << finish_list - start_list << " тиков" << endl << endl;
+
+    benchmark(bench, start, finish, 10);
 
     return SUCCESS;
 }
