@@ -308,13 +308,16 @@ T find_with_stack(vector< vector<int> > &lab, coord start, coord finish)
     way.push(start);
     lab[way.take().x][way.take().y] = -2;
 
-    while (way.take().x != finish.x || way.take().y != finish.y)
+    while (true)
     {
         if (way.empty())
         {
             cerr << "Нет пути!" << endl;
             return way;
         }
+
+        if (way.take().x == finish.x && way.take().y == finish.y)
+            break;
 
         vector<coord> neighbors = take_neighbor(lab, way.take());
 
