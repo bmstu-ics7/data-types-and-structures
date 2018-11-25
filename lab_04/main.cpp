@@ -383,10 +383,16 @@ int input_all(vector< vector<int> > &lab, coord &start, coord &finish)
         return INPUT_ERROR;
     }
 
+    if (lab[start_x][start_y] == -1)
+    {
+        cerr << "Некорректный ввод!" << endl;
+        return INPUT_ERROR;
+    }
+
     if (lab[finish_x][finish_y] == -1)
     {
-        cerr << "Нет пути!" << endl;
-        return NOT_WAY;
+        cerr << "Некорректный ввод!" << endl;
+        return INPUT_ERROR;
     }
 
     start.x = start_x;
