@@ -3,12 +3,16 @@
 #include <time.h>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 #define SUCCESS 0
 #define INPUT_ERROR -1
 #define NOT_WAY -2
 
 using namespace std;
+
+vector<void*> free_memory;
+bool search_memory = false;
 
 struct coord
 {
@@ -20,7 +24,6 @@ template <class T>
 struct my_list
 {
     T data;
-    my_list<T> *next;
     my_list<T> *prev;
 };
 
@@ -28,7 +31,6 @@ template <class T>
 struct stack_list
 {
     my_list<T> *element;
-    my_list<T> *first_element;
 
     stack_list()
     {
@@ -37,7 +39,7 @@ struct stack_list
 
     bool empty()
     {
-        if (first_element == NULL)
+        if (element == NULL)
             return true;
         else
             return false;
@@ -50,33 +52,39 @@ struct stack_list
             element = new my_list<T>;
             element->data = el;
             element->prev = NULL;
-            element->next = NULL;
 
-            first_element = element;
             return;
         }
 
-        element->next = new my_list<T>;
-        element->next->data = el;
-        element->next->prev = element;
-        element->next->next = NULL;
+        my_list<T> * temp = new my_list<T>;
+        temp->data = el;
+        temp->prev = element;
+        element = temp;
 
-        element = element->next;
+        if (search_memory)
+        {
+            for (int i = 0; i < free_memory.size(); i++)
+            {
+                if (element == free_memory[i])
+                {
+                    free_memory.erase(free_memory.begin() + i);
+                    break;
+                }
+            }
+        }
     }
 
     void pop()
     {
         if (element != NULL)
         {
+            if (search_memory)
+                free_memory.push_back(element);
+
             my_list<T> *el = element;
             element = element->prev;
 
             delete el;
-
-            if (element == NULL)
-                first_element = NULL;
-            else
-                element->next = NULL;
         }
     }
 
@@ -85,24 +93,18 @@ struct stack_list
         return element->data;
     }
 
-    stack_list(const stack_list &copied)
+    void free_list()
     {
-        my_list<T> *temp = copied.first_element;
-
-        for (; temp != NULL; temp = temp->next)
-            push(temp->data);
-    }
-
-    ~stack_list()
-    {
-        my_list<T> *temp = first_element;
+        my_list<T> *temp = element;
 
         while (temp != NULL)
         {
             my_list<T> *el = temp;
-            temp = temp->next;
+            temp = temp->prev;
             delete el;
         }
+
+        element = NULL;
     }
 };
 
@@ -129,7 +131,6 @@ struct stack_vector
     {
         element++;
         vec[element] = el;
-        //vec.push_back(el);
     }
 
     void pop()
@@ -137,7 +138,6 @@ struct stack_vector
         if (element > -1)
         {
             element--;
-            //vec.erase(vec.end() - 1);
         }
     }
 
@@ -228,24 +228,6 @@ ostream& operator << (ostream &output, const vector< vector<int> > lab)
     for (int i = 0; i < lab[0].size(); i++)
         cout << "━";
     output << "┛" << endl;
-
-    return output;
-}
-
-ostream& operator << (ostream &output, const stack_vector<coord> stack)
-{
-    for (int i = 0; i < stack.element + 1; i++)
-        output << stack.vec[i].x << ' ' << stack.vec[i].y << endl;
-
-    return output;
-}
-
-ostream& operator << (ostream &output, const stack_list<coord> stack)
-{
-    my_list<coord> *temp = stack.first_element;
-
-    for (; temp != NULL; temp = temp->next)
-        output << temp->data.x << ' ' << temp->data.y << endl;
 
     return output;
 }
@@ -425,8 +407,10 @@ void benchmark(vector< vector<int> > bench, coord start, coord finish, int count
         vector< vector<int> > copy = bench;
 
         clock_t start_time = clock();
-        stack_vector<coord> way = find_with_stack< stack_vector<coord> >(copy, start, finish);
+        stack_list<coord> way = find_with_stack< stack_list<coord> >(copy, start, finish);
         clock_t finish_time = clock();
+
+        way.free_list();
 
         result_list += finish_time - start_time;
     }
@@ -459,7 +443,6 @@ int main(void)
     if (way_vector.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_vector<coord> >(lab_vector, way_vector);
 
-    //cout << way_vector;
     cout << lab_vector << endl;
 
     cout << "Реализация списком: " << endl;
@@ -470,13 +453,19 @@ int main(void)
     if (way_list.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_list<coord> >(lab_list, way_list);
 
-    //cout << way_list;
     cout << lab_list << endl;
 
     cout << "Время реализации массивом: " << finish_vector - start_vector << " тиков" << endl;
     cout << "Время реализации списком: " << finish_list - start_list << " тиков" << endl << endl;
 
     benchmark(bench, start, finish, 10);
+
+    cout << endl;
+    search_memory = true;
+    stack_list<coord> memory_test = find_with_stack< stack_list<coord> >(bench, start, finish);
+    cout << "Фрагментация памяти (освобожденные, но не использованные адреса памяти): " << endl;
+    for (int i = 0; i < free_memory.size(); i++)
+        cout << free_memory[i] << endl;
 
     return SUCCESS;
 }
