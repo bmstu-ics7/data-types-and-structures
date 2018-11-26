@@ -327,7 +327,7 @@ int generate_matrix(Matrix &matrix, const int count)
             n += 1;
 
         vector<int> col_in_line(0);
-        for (int j = 0; j < matrix.m; j++)
+        for (int j = 0; j < n; j++)
         {
             int num;
             bool was = true;
