@@ -2,6 +2,7 @@
 #include <vector>
 #include <time.h>
 #include <cstdlib>
+#include <ctime>
 
 #define SUCCESS 0
 #define INPUT_ERROR -1
@@ -109,7 +110,7 @@ template <class T>
 struct stack_vector
 {
     int element;
-    vector<T> vec;
+    T vec[1000];
 
     stack_vector()
     {
@@ -127,7 +128,8 @@ struct stack_vector
     void push(T el)
     {
         element++;
-        vec.push_back(el);
+        vec[element] = el;
+        //vec.push_back(el);
     }
 
     void pop()
@@ -135,7 +137,7 @@ struct stack_vector
         if (element > -1)
         {
             element--;
-            vec.erase(vec.end() - 1);
+            //vec.erase(vec.end() - 1);
         }
     }
 
@@ -326,7 +328,7 @@ T find_with_stack(vector< vector<int> > &lab, coord start, coord finish)
             continue;
         }
 
-        int take = rand() % neighbors.size();
+        int take = 0;//rand() % neighbors.size();
 
         coord c;
         c.x = neighbors[take].x;
@@ -453,9 +455,9 @@ int main(void)
 
     clock_t start_vector = clock();
     stack_vector<coord> way_vector = find_with_stack< stack_vector<coord> >(lab_vector, start, finish);
+    clock_t finish_vector = clock();
     if (way_vector.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_vector<coord> >(lab_vector, way_vector);
-    clock_t finish_vector = clock();
 
     //cout << way_vector;
     cout << lab_vector << endl;
@@ -464,9 +466,9 @@ int main(void)
 
     clock_t start_list = clock();
     stack_list<coord> way_list = find_with_stack< stack_list<coord> >(lab_list, start, finish);
+    clock_t finish_list = clock();
     if (way_list.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_list<coord> >(lab_list, way_list);
-    clock_t finish_list = clock();
 
     //cout << way_list;
     cout << lab_list << endl;
