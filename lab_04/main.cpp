@@ -312,7 +312,6 @@ T find_with_stack(vector< vector<int> > &lab, coord start, coord finish)
     {
         if (way.empty())
         {
-            cerr << "Нет пути!" << endl;
             return way;
         }
 
@@ -454,6 +453,7 @@ int main(void)
 
     clock_t start_vector = clock();
     stack_vector<coord> way_vector = find_with_stack< stack_vector<coord> >(lab_vector, start, finish);
+    if (way_vector.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_vector<coord> >(lab_vector, way_vector);
     clock_t finish_vector = clock();
 
@@ -464,6 +464,7 @@ int main(void)
 
     clock_t start_list = clock();
     stack_list<coord> way_list = find_with_stack< stack_list<coord> >(lab_list, start, finish);
+    if (way_list.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_list<coord> >(lab_list, way_list);
     clock_t finish_list = clock();
 
