@@ -9,6 +9,8 @@
 #define INPUT_ERROR -1
 #define NOT_WAY -2
 
+#define STACK_SIZE 1000
+
 using namespace std;
 
 vector<void*> free_memory;
@@ -112,7 +114,7 @@ template <class T>
 struct stack_vector
 {
     int element;
-    T vec[1000];
+    T vec[STACK_SIZE];
 
     stack_vector()
     {
@@ -466,6 +468,9 @@ int main(void)
     cout << "Фрагментация памяти (освобожденные, но не использованные адреса памяти): " << endl;
     for (int i = 0; i < free_memory.size(); i++)
         cout << free_memory[i] << endl;
+
+    search_memory = false;
+    memory_test.free_list();
 
     return SUCCESS;
 }
