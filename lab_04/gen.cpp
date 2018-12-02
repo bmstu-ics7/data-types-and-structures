@@ -15,6 +15,8 @@ int main(int argc, char **argv)
     int m = atoi(argv[2]);
     int percent = atoi(argv[3]);
 
+    cout << n << ' ' << m << endl;
+
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m ;j++)
@@ -26,4 +28,8 @@ int main(int argc, char **argv)
         cout << endl;
     }
 
+    cout << "0 0" << endl;
+    cout << n - 1 << ' ' << m - 1 << endl;
+
+    return 0;
 }
