@@ -9,9 +9,17 @@
 #define INPUT_ERROR -1
 #define NOT_WAY -2
 
-#define STACK_SIZE 1000
+#define STACK_SIZE 100000
 
 using namespace std;
+
+unsigned long long tick(void)
+{
+    unsigned long long d;
+    unsigned long long a;
+    __asm__ __volatile__ ("rdtsc" : "=a" (a), "=d" (d));
+    return ((d << 32) | a);
+}
 
 vector<void*> free_memory;
 bool search_memory = false;
@@ -138,9 +146,7 @@ struct stack_vector
     void pop()
     {
         if (element > -1)
-        {
             element--;
-        }
     }
 
     T take()
@@ -390,27 +396,29 @@ int input_all(vector< vector<int> > &lab, coord &start, coord &finish)
 
 void benchmark(vector< vector<int> > bench, coord start, coord finish, int count)
 {
-    long long int result_vector = 0;
+    unsigned long long result_vector = 0;
     for (int i = 0; i < 10; i++)
     {
         vector< vector<int> > copy = bench;
 
-        clock_t start_time = clock();
-        stack_vector<coord> way = find_with_stack< stack_vector<coord> >(copy, start, finish);
-        clock_t finish_time = clock();
+        stack_vector<coord> way;
+        unsigned long long start_time = tick();
+        way = find_with_stack< stack_vector<coord> >(copy, start, finish);
+        unsigned long long finish_time = tick();
 
         result_vector += finish_time - start_time;
     }
     result_vector /= 10;
 
-    long long int result_list = 0;
+    unsigned long long result_list = 0;
     for (int i = 0; i < 10; i++)
     {
         vector< vector<int> > copy = bench;
 
-        clock_t start_time = clock();
-        stack_list<coord> way = find_with_stack< stack_list<coord> >(copy, start, finish);
-        clock_t finish_time = clock();
+        stack_list<coord> way;
+        unsigned long long start_time = tick();
+        way = find_with_stack< stack_list<coord> >(copy, start, finish);
+        unsigned long long finish_time = tick();
 
         way.free_list();
 
@@ -439,9 +447,10 @@ int main(void)
 
     cout << "Реализация массивом: " << endl;
 
-    clock_t start_vector = clock();
-    stack_vector<coord> way_vector = find_with_stack< stack_vector<coord> >(lab_vector, start, finish);
-    clock_t finish_vector = clock();
+    stack_vector<coord> way_vector;
+    unsigned long long start_vector = tick();
+    way_vector = find_with_stack< stack_vector<coord> >(lab_vector, start, finish);
+    unsigned long long finish_vector = tick();
     if (way_vector.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_vector<coord> >(lab_vector, way_vector);
 
@@ -449,9 +458,10 @@ int main(void)
 
     cout << "Реализация списком: " << endl;
 
-    clock_t start_list = clock();
-    stack_list<coord> way_list = find_with_stack< stack_list<coord> >(lab_list, start, finish);
-    clock_t finish_list = clock();
+    stack_list<coord> way_list;
+    unsigned long long start_list = tick();
+    way_list = find_with_stack< stack_list<coord> >(lab_list, start, finish);
+    unsigned long long finish_list = tick();
     if (way_list.empty()) cerr << "Нет пути!" << endl;
     draw_way< stack_list<coord> >(lab_list, way_list);
 
