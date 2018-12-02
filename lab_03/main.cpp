@@ -279,91 +279,64 @@ int cin_matrix(Matrix &matrix, const int count)
 
 int generate_matrix(Matrix &matrix, const int count)
 {
-    vector<int> val(0);
+    vector< vector<int> > mat;
 
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < matrix.n; i++)
     {
+        vector<int> line;
+        for (int j = 0; j < matrix.m; j++)
+            line.push_back(0);
+
+        mat.push_back(line);
+    }
+
+    vector<int> was_int;
+
+    for (int k = 0; k < count; k++)
+    {
+        int i = rand() % matrix.n;
+        int j = rand() % matrix.m;
+
+        while (mat[i][j])
+        {
+            i = rand() % matrix.n;
+            j = rand() % matrix.m;
+        }
+
+        int val = rand() % count;
         bool was = true;
-        int num;
 
         while (was)
         {
-            num = rand() % count + 1;
+            for (int x = 0; x < was_int.size(); x++)
+                if (val == was_int[x])
+                {
+                    val = rand() % count;
+                    continue;
+                }
 
             was = false;
-            for (int j = 0; j < val.size(); j++)
-                if (num == val[j])
-                {
-                    was = true;
-                    break;
-                }
         }
 
-        val.push_back(num);
+        mat[i][j] = val;
     }
 
-    int count_in_line = count / matrix.n;
-    int count_with_plus = 0;
+    vector<int> lins;
 
-    if (count > matrix.n)
-            count_with_plus = count % matrix.n;
-
-    matrix.first_elements = NULL;
-
-    int number = 0;
-
-    if (count < matrix.n)
+    for (int i = 0; i < mat.size(); i++)
     {
-        count_in_line = 1;
-        number = count;
-    }
-    else
-        number = matrix.n;
-
-    for (int i = 0; i < number; i++)
-    {
-        int n = count_in_line;
-        if (i < count_with_plus)
-            n += 1;
-
-        vector<int> col_in_line(0);
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < mat[0].size(); j++)
         {
-            int num;
-            bool was = true;
-
-            while (was)
+            if (mat[i][j])
             {
-                was = false;
-                num = rand() % matrix.m;
-
-                for (int k = 0; k < col_in_line.size(); k++)
-                    if (num == col_in_line[k])
-                    {
-                        was = true;
-                        break;
-                    }
+                matrix.values.push_back(mat[i][j]);
+                matrix.number_of_columns.push_back(j);
+                lins.push_back(i);
             }
-
-            col_in_line.push_back(num);
         }
-
-        for (int i = 0; i < col_in_line.size(); i++)
-            for (int j = 0; j < col_in_line.size() - i - 1; j++)
-                    if (col_in_line[j] > col_in_line[j + 1])
-                        swap(col_in_line[j], col_in_line[j + 1]);
-
-        list_append(&(matrix.first_elements), matrix.number_of_columns.size());
-        for (int j = 0; j < col_in_line.size(); j++)
-            matrix.number_of_columns.push_back(col_in_line[j]);
     }
 
-    for (int i = count; i < matrix.n; i++)
-    {
-        list_append(&(matrix.first_elements), count);
-    }
-
-    matrix.values = val;
+    insert_matrix_elements(matrix, lins);
 
     return SUCCESS;
 }
