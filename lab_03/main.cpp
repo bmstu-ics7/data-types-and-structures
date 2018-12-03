@@ -303,7 +303,7 @@ int generate_matrix(Matrix &matrix, const int count)
             j = rand() % matrix.m;
         }
 
-        int val = rand() % count;
+        int val = rand() % count + 1;
         bool was = true;
 
         while (was)
@@ -311,7 +311,7 @@ int generate_matrix(Matrix &matrix, const int count)
             for (int x = 0; x < was_int.size(); x++)
                 if (val == was_int[x])
                 {
-                    val = rand() % count;
+                    val = rand() % count + 1;
                     continue;
                 }
 
