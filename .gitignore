@@ -1,6 +1,7 @@
 .DS_Store
 *.exe
 *.out
+*.in
 *.o
 *.gst
 Dockerfile
