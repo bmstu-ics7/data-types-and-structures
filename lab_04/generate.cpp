@@ -5,12 +5,13 @@
 #include <ctime>
 #include <fstream> 
 #include <stdio.h>
+#define SIZE 100000
 using namespace std;
 int main(int argc, char **argv){
     setlocale(0, "rus");
     srand(time(0));
-    string b[1000],t="p";
-    int a = 1, c[1000], c1 = 2, n, k = 0,ii=0,oo=0;
+    string b[SIZE],t="p";
+    int a = 1, c[SIZE], c1 = 2, n, k = 0,ii=0,oo=0;
     ii = atoi(argv[1]);
     oo = atoi(argv[2]);
     cout << ii << ' ' << oo;
