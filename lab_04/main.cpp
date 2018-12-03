@@ -482,6 +482,24 @@ int main(void)
     search_memory = false;
     memory_test.free_list();
 
+    stack_vector<int> bench_vec;
+    unsigned long long st_vec = tick();
+    for (int i = 0; i < 1000; i++)
+        bench_vec.push(0);
+    for (int i = 0; i < 1000; i++)
+        bench_vec.pop();
+    unsigned long long fn_vec = tick();
+    cout << "1000 добавлений и удалений в реализации массивом: " << fn_vec - st_vec << endl;
+
+    stack_list<int> bench_list;
+    unsigned long long st_list = tick();
+    for (int i = 0; i < 1000; i++)
+        bench_list.push(0);
+    for (int i = 0; i < 1000; i++)
+        bench_list.pop();
+    unsigned long long fn_list = tick();
+    cout << "1000 добавлений и удалений в реализации списком: " << fn_list - st_list << endl;
+
     return SUCCESS;
 }
 
