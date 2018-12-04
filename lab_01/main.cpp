@@ -164,7 +164,7 @@ bool check_count(string s)
     return true;
 }
 
-bool check_float(string s)
+bool check_float(const string s)
 {
     return check_value(s) && check_count(s);
 }
@@ -385,7 +385,7 @@ int print(vector<int> a, int pow, int answ)
 }
 
 
-int division(string first, string second)
+int division(const string first, const string second)
 {
     int answ1 = 0, answ2 = 0;
     int pow = get_pow(first);
