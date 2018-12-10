@@ -182,16 +182,16 @@ struct queue_list
 };
 
 template <class T>
-void test_queue(T queue)
+void test_queue(T queue, int t1_max, int t2_max, int t3_max)
 {
     float time = 0;
 
     int count = 0;
     int count_type2 = 0;
 
-    float t1_last = 0, t1 = rand() % 6; // приход типа 1
-    float t2_last = 0, t2 = rand() % 5; // проход типа 4
-    float t3_last = 0, t3 = rand() % 5; // проход типа 2
+    float t1_last = 0, t1 = (rand() % t1_max * 1000 + 1) / 1000; // приход типа 1
+    float t2_last = 0, t2 = (rand() % t2_max * 1000 + 1) / 1000; // проход типа 4
+    float t3_last = 0, t3 = (rand() % t3_max * 1000 + 1) / 1000; // проход типа 2
     int t4 = rand() % 3 + 1; // приход типа 2
 
     unsigned long long sum_size = 0;
@@ -208,7 +208,7 @@ void test_queue(T queue)
         {
             queue.add(time);
             t1_last = time;
-            t1 = rand() % 6001 / 1000;
+            t1 = (rand() % t1_max * 1000 + 1) / 1000;
 
             in_count++;
         }
@@ -222,7 +222,7 @@ void test_queue(T queue)
 
                 queue.pop();
                 t2_last = time;
-                t2 = rand() % 5001 / 1000;
+                t2 = (rand() % t2_max * 1000 + 1) / 1000;
 
                 count++;
                 out_count++;
@@ -235,7 +235,7 @@ void test_queue(T queue)
                 {
                     type2 = true;
                     t3_last = time;
-                    t3 = rand() % 5;
+                    t3 = (rand() % t3_max * 1000 + 1) / 1000;
                 }
             }
         }
@@ -248,7 +248,7 @@ void test_queue(T queue)
             count_type2++;
 
             t2_last = time;
-            t2 = rand() % 5001 / 1000;
+            t2 = (rand() % t2_max * 1000 + 1) / 1000;
 
             t4 = rand() % 4 + 1;
         }
@@ -323,18 +323,71 @@ void start_test()
         cout << ">";
     }
 
+    cout << endl;
+
+    cout << "Ввести максимальное T1, T2, T3?" << endl;
+    cout << "[1] - Использовать стандартные (5, 4, 4)" << endl;
+    cout << "[2] - Ввести"  << endl;
+    cout << ">";
+
+    int choice_input;
+    while (scanf("%d", &choice_input) != 1 || (choice_input != 1 && choice_input != 2))
+    {
+        string buf;
+        getline(cin, buf);
+
+        cout << ">";
+    }
+
+    int t1, t2, t3;
+    if (choice_input == 1)
+    {
+        t1 = 5;
+        t2 = 4;
+        t3 = 4;
+    }
+    else
+    {
+        cout << "T1: ";
+        while (scanf("%d", &t1) != 1 || t1 <= 0)
+        {
+            string buf;
+            getline(cin, buf);
+
+            cout << "T1: ";
+        }
+
+        cout << "T2: ";
+        while (scanf("%d", &t2) != 1 || t2 <= 0)
+        {
+            string buf;
+            getline(cin, buf);
+
+            cout << "T2: ";
+        }
+
+        cout << "T3: ";
+        while (scanf("%d", &t3) != 1 || t3 <= 0)
+        {
+            string buf;
+            getline(cin, buf);
+
+            cout << "T3: ";
+        }
+    }
+
     if (choice == 1)
     {
         queue_array<int> array;
         cout << "\e[1mРеализация массивом:\e[0m" << endl;
-        test_queue< queue_array<int> >(array);
+        test_queue< queue_array<int> >(array, t1, t2, t3);
         cout << endl;
     }
     else
     {
         queue_list<int> list;
         cout << "\e[1mРеализация списком:\e[0m" << endl;
-        test_queue< queue_list<int> >(list);
+        test_queue< queue_list<int> >(list, t1, t2, t3);
         cout << endl;
     }
 }
