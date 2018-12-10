@@ -248,6 +248,13 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
                     }
                 }
             }
+
+            if (t4 == 0)
+            {
+                type2 = true;
+                t3_last = time;
+                t3 = (float)(rand() % (t3_max * 100) + 1) / 100;
+            }
         }
 
         if (type2 && time - t3_last >= t3)
@@ -260,7 +267,12 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
             t2_last = time;
             t2 = (float)(rand() % (t2_max * 100) + 1) / 100;
 
-            t4 = rand() % 4 + 1;
+            if (queue.size() == 0)
+                t4 = 0;
+            else if (queue.size() < 4)
+                t4 = rand() % queue.size() + 1;
+            else
+                t4 = rand() % 4 + 1;
         }
 
         if (count % 100 == 0 && count > 0 && was_check)
@@ -279,7 +291,7 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
     }
 
     cout << "Общее время моделирования: " << time << endl;
-    cout << "Время простоя аппарата: " << time - time_in_OA << endl;
+    cout << "Время простоя аппарата: " << (time - time_in_OA) / 1000 << endl;
     cout << "Количество вошедших заявок первого типа: " << in_count << endl;
     cout << "Количество вышедших заявок первого типа: " << out_count << endl;
     cout << "Количество обращений заявок второго типа: " << count_type2 << endl;
