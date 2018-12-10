@@ -192,7 +192,7 @@ void test_queue(T queue)
     float t1_last = 0, t1 = rand() % 6; // приход типа 1
     float t2_last = 0, t2 = rand() % 5; // проход типа 4
     float t3_last = 0, t3 = rand() % 5; // проход типа 2
-    float t4 = rand() % 3 + 1; // приход типа 2
+    int t4 = rand() % 3 + 1; // приход типа 2
 
     unsigned long long sum_size = 0;
     int in_count = 0, out_count = 0;
@@ -250,7 +250,7 @@ void test_queue(T queue)
             t2_last = time;
             t2 = rand() % 5001 / 1000;
 
-            t4 = (rand() % 4001 + 1000) / 1000;
+            t4 = rand() % 4 + 1;
         }
 
         if (count % 100 == 0 && count > 0 && was_check)
@@ -277,6 +277,8 @@ void test_queue(T queue)
 
 ostream& operator << (ostream &output, const vector<void*> vec)
 {
+    cout << "Количество: " << vec.size() << endl;
+
     for (int i = 0; i < vec.size(); i++)
         output << vec[i] << endl;
 
@@ -305,28 +307,54 @@ void choice_search_memory()
     cout << endl;
 }
 
-int main(void)
+void start_test()
 {
-    srand(time(NULL));
+    cout << "Реализицая: " << endl;
+    cout << "[1] - Массивом" << endl;
+    cout << "[2] - Списком"  << endl;
+    cout << ">";
 
-    choice_search_memory();
+    int choice;
+    while (scanf("%d", &choice) != 1 || (choice != 1 && choice != 2))
+    {
+        string buf;
+        getline(cin, buf);
 
-    queue_array<int> array;
-    queue_list<int> list;
+        cout << ">";
+    }
 
-    cout << "\e[1mРеализация массивом:\e[0m" << endl;
-    test_queue< queue_array<int> >(array);
-    cout << endl << endl;
+    if (choice == 1)
+    {
+        queue_array<int> array;
+        cout << "\e[1mРеализация массивом:\e[0m" << endl;
+        test_queue< queue_array<int> >(array);
+        cout << endl;
+    }
+    else
+    {
+        queue_list<int> list;
+        cout << "\e[1mРеализация списком:\e[0m" << endl;
+        test_queue< queue_list<int> >(list);
+        cout << endl;
+    }
+}
 
-    cout << "\e[1mРеализация списком:\e[0m" << endl;
-    test_queue< queue_list<int> >(list);
-    cout << endl << endl;
-
+void print_memory()
+{
     if (search_memory)
     {
         cout << "\e[1mФрагментация памяти:\e[0m" << endl;
         cout << fragmentation << endl;
     }
+}
+
+int main(void)
+{
+    srand(time(NULL));
+
+    choice_search_memory();
+    start_test();
+    print_memory();
 
     return SUCCESS;
 }
