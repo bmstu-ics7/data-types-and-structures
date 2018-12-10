@@ -11,6 +11,13 @@ using namespace std;
 vector<void*> fragmentation;
 bool search_memory = false;
 
+unsigned long long tick(void)
+{
+    unsigned long long d;
+    __asm__ __volatile__ ("rdtsc" : "=A" (d) );
+    return d;
+}
+
 template <class T>
 struct my_list
 {
@@ -376,6 +383,8 @@ void start_test()
         }
     }
 
+    cout << endl;
+
     if (choice == 1)
     {
         queue_array<int> array;
@@ -385,6 +394,8 @@ void start_test()
     }
     else
     {
+        choice_search_memory();
+
         queue_list<int> list;
         cout << "\e[1mРеализация списком:\e[0m" << endl;
         test_queue< queue_list<int> >(list, t1, t2, t3);
@@ -401,13 +412,42 @@ void print_memory()
     }
 }
 
+void benchmark()
+{
+    search_memory = false;
+
+    queue_array<int> array;
+
+    unsigned long long start_arr = tick();
+    for (int i = 0; i < 1000; i++)
+        array.add(0);
+
+    for (int i = 0; i < 1000; i++)
+        array.pop();
+    unsigned long long finish_arr = tick();
+
+    queue_list<int> list;
+
+    unsigned long long start_list = tick();
+    for (int i = 0; i < 1000; i++)
+        list.add(0);
+
+    for (int i = 0; i < 1000; i++)
+        list.pop();
+    unsigned long long finish_list = tick();
+
+    cout << "Сравнение 1000 добавлений и удалений:" << endl;
+    cout << "Реализация массивом: " << finish_arr - start_arr << " тиков" << endl;
+    cout << "Реализация списком: " << finish_list - start_list << " тиков" << endl;
+}
+
 int main(void)
 {
     srand(time(NULL));
 
-    choice_search_memory();
     start_test();
     print_memory();
+    benchmark();
 
     return SUCCESS;
 }
