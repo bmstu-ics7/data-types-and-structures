@@ -37,6 +37,7 @@ struct queue_array
     {
         pin = NULL;
         pout = NULL;
+        count = 0;
     }
 
     void add(T data_el)
@@ -215,7 +216,7 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
         {
             queue.add(time);
             t1_last = time;
-            t1 = (rand() % t1_max * 1000 + 1) / 1000;
+            t1 = (float)(rand() % (t1_max * 100) + 1) / 100;
 
             in_count++;
         }
@@ -224,25 +225,27 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
         {
             if (queue.size() > 0)
             {
-                time_in_OA += t2;
-                all_time_in_queue += time - queue.take_head();
-
-                queue.pop();
-                t2_last = time;
-                t2 = (rand() % t2_max * 1000 + 1) / 1000;
-
-                count++;
-                out_count++;
-
-                was_check = true;
-
-                t4--;
-
-                if (t4 == 0)
+                if (queue.size() != 0)
                 {
-                    type2 = true;
-                    t3_last = time;
-                    t3 = (rand() % t3_max * 1000 + 1) / 1000;
+                    time_in_OA += t2;
+                    all_time_in_queue += time - queue.take_head();
+                    queue.pop();
+                    t2_last = time;
+                    t2 = (float)(rand() % (t2_max * 100) + 1) / 100;
+
+                    count++;
+                    out_count++;
+
+                    was_check = true;
+
+                    t4--;
+
+                    if (t4 == 0)
+                    {
+                        type2 = true;
+                        t3_last = time;
+                        t3 = (float)(rand() % (t3_max * 100) + 1) / 100;
+                    }
                 }
             }
         }
@@ -255,7 +258,7 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
             count_type2++;
 
             t2_last = time;
-            t2 = (rand() % t2_max * 1000 + 1) / 1000;
+            t2 = (float)(rand() % (t2_max * 100) + 1) / 100;
 
             t4 = rand() % 4 + 1;
         }
@@ -265,7 +268,7 @@ void test_queue(T queue, int t1_max, int t2_max, int t3_max)
             cout << "Время: " << time << endl;
             cout << "Количество обработанных заявок: " << count << endl;
             cout << "Текущая длина очереди: " << queue.size() << endl;
-            cout << "Средняя длина очереди: " << (float)sum_size / time << endl;
+            cout << "Средняя длина очереди: " << (float)sum_size / time / 1000 << endl;
             cout << "Количество вошедших заявок: " << in_count << endl;
             cout << "Количество вышедших заявок: " << out_count << endl;
             cout << "Среднее время пребывания заявок в очереди: " << (float)all_time_in_queue / count;
