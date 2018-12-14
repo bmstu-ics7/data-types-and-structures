@@ -6,3 +6,4 @@
 *.gst
 Dockerfile
 *.ps
+*.gv
