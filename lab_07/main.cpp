@@ -19,34 +19,34 @@ using namespace std;
 
 struct MatrixGraph
 {
-    int size;
-    vector< vector<int> > ways;
+    int size;                                       // Количество вершин
+    vector< vector<int> > ways;                     // Матрица
 
-    MatrixGraph(ifstream &in);
-    void print(string file);
-    vector<int> find_ways_to_capital(int capital);
+    MatrixGraph(ifstream &in);                      // Конструктор считывания из файла
+    void print(string file);                        // Вывод на экран
+    vector<int> find_ways_to_capital(int capital);  // Поиск кротчайших путей
 };
 
 struct List
 {
-    int name;
-    int way;
-    List *next;
+    int name;                                       // Номер вершины
+    int way;                                        // Длина грани
+    List *next;                                     // Следующий элемент
 
-    List();
-    void push(List *list, int name, int way);
-    void free(List *list);
+    List();                                         // Конструктор
+    void push(List *list, int name, int way);       // Добавление жлемента в конец
+    void free(List *list);                          // Очистка памяти
 };
 
 struct ListGraph
 {
-    int size;
-    vector<List*> ways;
+    int size;                                       // Количество вершин
+    vector<List*> ways;                             // Списки
 
-    ListGraph(ifstream &in);
-    void print();
-    vector<int> find_ways_to_capital(int capital);
-    void free();
+    ListGraph(ifstream &in);                        // Конструктор считывания из файла
+    void print();                                   // Вывод
+    vector<int> find_ways_to_capital(int capital);  // Поиск кротчайших путей
+    void free();                                    // Очистка памяти
 };
 
 MatrixGraph::MatrixGraph(ifstream &in)
@@ -274,6 +274,27 @@ int input_file(ifstream &file)
         return INCORRECT_FILE;
     }
 
+    vector<int> v;
+    
+    while (true)
+    {
+        int num;
+        file >> num;
+
+        if (file.eof())
+            break;
+
+        v.push_back(num);
+    }
+
+    for (int i = 0; i < sqrt(v.size()); i++)
+        for (int j = 0; j < sqrt(v.size()); j++)
+            if (v[i * sqrt(v.size()) + j] != v[j * sqrt(v.size()) + i])
+            {
+                cerr << "Таблица не симметрична!" << endl;
+                return INCORRECT_FILE;
+            }
+
     cout << endl;
     return SUCCESS;
 }
@@ -317,6 +338,9 @@ int main(void)
     ifstream file;
     if (input_file(file) != SUCCESS)
         return INCORRECT_FILE;
+
+    file.clear();
+    file.seekg(0);
 
     MatrixGraph matrix(file);
     matrix.print("matrix");
