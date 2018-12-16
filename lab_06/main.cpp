@@ -951,6 +951,7 @@ void remove_tree(Tree *tree, int remove_num)
     cout << endl;
 
     tree->print("tree_second");
+    cout << endl;
 }
 
 void remove_balanced_tree(BalancedTreeHead &balance_tree, int remove_num)
@@ -966,6 +967,7 @@ void remove_balanced_tree(BalancedTreeHead &balance_tree, int remove_num)
     cout << endl;
 
     balance_tree.print("balance_second");
+    cout << endl;
 }
 
 void remove_hash_table(ClosedHashTable &hash_table, int remove_num)
@@ -981,6 +983,7 @@ void remove_hash_table(ClosedHashTable &hash_table, int remove_num)
     cout << endl;
 
     hash_table.print();
+    cout << endl;
 }
 
 void remove_file(File &file, int remove_num)
@@ -996,6 +999,7 @@ void remove_file(File &file, int remove_num)
     cout << endl;
 
     file.print();
+    cout << endl;
 }
 
 int main(void)
