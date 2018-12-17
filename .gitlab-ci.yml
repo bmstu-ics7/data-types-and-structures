@@ -17,25 +17,93 @@ lab_01:
   stage: lab_01
 
   script:
-  - apk add --no-cache g++ 
+  - apk add --no-cache g++
   - cd lab_01
-  - g++ main.cpp
+  - g++ -std=c++14 -Wall -Werror main.cpp
   - cd
 
   only:
   - master
-    
+  - cppcheck-fix
+
 lab_02:
   stage: lab_02
 
   script:
   - apk add --no-cache g++
   - cd lab_02
-  - g++ main.cpp
+  - g++ -std=c++14 -Wall -Werror main.cpp
   - cd
 
   only:
   - master
+  - cppcheck-fix
+
+lab_03:
+  stage: lab_03
+
+  script:
+  - apk add --no-cache g++
+  - cd lab_03
+  - g++ -std=c++14 -Wall -Werror main.cpp
+  - cd
+
+  only:
+  - master
+  - cppcheck-fix
+
+lab_04:
+  stage: lab_04
+
+  script:
+  - apk add --no-cache g++
+  - cd lab_04
+  - g++ -std=c++14 -Wall -Werror main.cpp
+  - cd
+
+  only:
+  - master
+  - cppcheck-fix
+
+lab_05:
+  stage: lab_05
+
+  script:
+  - apk add --no-cache g++
+  - cd lab_05
+  - g++ -std=c++14 -Wall -Werror main.cpp
+  - cd
+
+  only:
+  - master
+  - cppcheck-fix
+
+lab_02:
+  stage: lab_06
+
+  script:
+  - apk add --no-cache g++
+  - cd lab_06
+  - g++ -std=c++14 -Wall -Werror main.cpp
+  - cd
+
+  only:
+  - master
+  - cppcheck-fix
+
+lab_07:
+  stage: lab_07
+
+  script:
+  - apk add --no-cache g++
+  - cd lab_07
+  - g++ -std=c++14 -Wall -Werror main.cpp
+  - cd
+
+  only:
+  - master
+  - cppcheck-fix
+
 
 cloc:
   stage: cloc
