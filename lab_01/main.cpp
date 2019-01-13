@@ -18,7 +18,9 @@ using namespace std;
 
 void inter(string *a)
 {
-    for (int i = 0 ; i < (*a).size(); i++)
+    int size = (*a).size();
+
+    for (int i = 0 ; i < size; i++)
     {
         if ((*a)[i] == 'E')
             (*a)[i] = 'e';
@@ -40,8 +42,9 @@ void inter(string *a)
 void del_null(vector<int>& a)
 {
     int count = 0;
+    int size = a.size();
     
-    for (int i = 0; i < a.size(); i++)
+    for (int i = 0; i < size; i++)
     {
         if (a[i] == 0)
             count++;
@@ -51,7 +54,9 @@ void del_null(vector<int>& a)
     
     for (int i = 0; i < count; i++)
     {
-        for (int j = 0; j < a.size() - 1; j++)
+        size = a.size();
+
+        for (int j = 0; j < size - 1; j++)
             swap(a[j], a[j + 1]);
         
         a.pop_back();
@@ -62,8 +67,9 @@ bool check_value(string s)
 {
     int count_e = 0, count_dots = 0;
     int index_e = -1;
+    int size = s.size();
     
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i < size; i++)
     {
         if (!isdigit(s[i]))
         {
@@ -74,37 +80,37 @@ bool check_value(string s)
                     // 12-12e12
                     if (i > 0 && s[i - 1] != 'e')
                         return false;
-                    
+
                     // 12e12-
-                    if (i == s.size() - 1)
+                    if (i == size - 1)
                         return false;
-                    
+
                     break;
                 case '.':
                     if (++count_dots > 1)
                         return false;
-                    
+
                     if (count_e == 1)
                         return false;
-                    
+
                     break;
-                    
+
                 case 'e':
-                    if (i == 0 || i == s.size() - 1)
+                    if (i == 0 || i == size - 1)
                         return false;
-                    
+
                     if (++count_e > 1)
                         return false;
-                    
+
                     index_e = i;
-                    
+
                     break;
-                    
+
                 default: return false;
             }
         }
     }
-    
+
     return true;
 }
 
@@ -113,8 +119,9 @@ bool check_count(string s)
     int index_e = -1;
     int count_dots = 0;
     int count_symb = 0;
+    int size = s.size();
     
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i < size; i++)
     {
         if (s[i] == 'e')
             index_e = i;
@@ -154,10 +161,11 @@ bool check_count(string s)
     }
     else
     {
-        if (s[0] == '0' && s[1] == '.' && s.size() > 31)
+        size = s.size();
+        if (s[0] == '0' && s[1] == '.' && size > 31)
             return true;
         
-        if (s.size() - count_dots - count_symb > 30)
+        if (size - count_dots - count_symb > 30)
             return false;
     }
     
@@ -171,13 +179,15 @@ bool check_float(const string s)
 
 bool check_int(string s)
 {
-    if (s.size() > 30 && isdigit(s[0]))
+    int size = s.size();
+
+    if (size > 30 && isdigit(s[0]))
         return false;
     
-    if (s.size() > 31 && !isdigit(s[0]))
+    if (size > 31 && !isdigit(s[0]))
         return false;
     
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i < size; i++)
         if (!isdigit(s[i]))
         {
             if (!(i == 0 && (s[i] == '+' || s[i] == '-')))
@@ -190,9 +200,10 @@ bool check_int(string s)
 int get_pow(string a)
 {
     int pow = 0;
-    int index_e = a.size();
+    int size = a.size();
+    int index_e = size;
     
-    for (int i = 0; i < a.size(); i++)
+    for (int i = 0; i < size; i++)
     {
         if (a[i] == 'e' || a[i] == 'E')
             index_e = i;
@@ -210,13 +221,14 @@ int get_pow(string a)
 vector<int> float_to_intarr(string a, int* pow, int* answ)
 {
     int size = -1;
+    int a_size = a.size();
     
     if (a[0] == '-')
         *answ = -1;
     else
         *answ = 1;
     
-    for (int i = 0; i < a.size(); i++)
+    for (int i = 0; i < a_size; i++)
     {
         if (a[i] == '.' && a[i + 1] != 'e')
         {
@@ -233,7 +245,7 @@ vector<int> float_to_intarr(string a, int* pow, int* answ)
     
     if (size == -1)
     {
-        size = a.size();
+        size = a_size;
     }
     
     vector<int> arr(size);
@@ -264,19 +276,21 @@ vector<int> int_to_intarr(string a, int* answ)
         *answ = -1;
     else
         *answ = 1;
+
+    int size = a.size();
     
-    vector<int> arr(a.size());
+    vector<int> arr(size);
     
     if (!isdigit(a[0]))
     {
         arr.pop_back();
         
-        for (int i = 1; i < a.size(); i++)
+        for (int i = 1; i < size; i++)
             arr[i - 1] = (int)a[i] - 48;
     }
     else
     {
-        for (int i = 0; i < a.size(); i++)
+        for (int i = 0; i < size; i++)
             arr[i] = (int)a[i] - 48;
     }
     
